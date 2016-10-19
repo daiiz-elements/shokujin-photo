@@ -1,0 +1,109 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="shokujin-photo">
+  <template>
+    <style>
+      /* shadow Root 配下 */
+      :host {
+        display: block;
+        position: relative;
+        overflow: hidden;
+      }
+
+      :host #box {
+        width: 100%;
+        height: 100%;
+      }
+
+      :host img {
+        width: 100%;
+        height: 100%;
+      }
+
+      :host #captcha {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: rgb(234, 223, 198);
+        background-color: #000;
+        padding: 4px;
+        padding-left: 6px;
+        padding-right: 6px;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <div id="box">
+      <img id="image" src="">
+      <div id="captcha">? ? ?</div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'shokujin-photo',
+
+      properties: {
+        b64jpg: {
+          type: String,
+          value: '',
+          observer: '_b64jpgChanged'
+        },
+
+        label: {
+          type: Boolean,
+          value: false
+        },
+
+        number: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      _b64jpgChanged: function (newValue, oldValue) {
+        this.$.image.src = newValue;
+        if (newValue.length > 40) {
+          this._classify(newValue);
+        }
+      },
+
+      _classify: function (b64img) {
+        var self = this;
+        var dict = {
+          'jpg': b64img
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', this._apiUri(), true);
+        xhr.responseType = 'json';
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        //xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
+        xhr.onload = function (e) {
+          var num = +this.response.description.split('-')[1];
+          var label = '';
+          var tnum = '';
+          if (self.label) label = self._getLabel(num);
+          if (self.number) tnum = "定食" + num + "　"
+          var res = tnum + label;
+          self.$.captcha.innerHTML = res;
+        };
+        xhr.send(JSON.stringify(dict));
+      },
+      
+      _getLabel: function (num) {
+        if (+num === 1) return "麻婆豆腐";
+        if (+num === 3) return "肉野菜炒め";
+        if (+num === 4) return "豚肉とザーサイの細切り炒め";
+        if (+num === 5) return "麻婆春雨";
+      },
+      
+      _apiUri: function () {
+        return 'https://shokujin-classifier.herokuapp.com/api/classify';
+      }
+
+    });
+  </script>
+</dom-module>
