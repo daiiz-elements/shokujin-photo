@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <title>shokujin-photo demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="photos.js"></script>
+
+    <script>
+      /* this script must run before Polymer is imported */
+      window.Polymer = {
+        dom: 'shadow',
+        lazyRegister: true
+      };
+    </script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../shokujin-photo.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic shokujin-photo Demo</h3>
+      <demo-snippet>
+        <template>
+          <shokujin-photo
+              number label b64jpg="data:image/jpeg;base64,...">
+          </shokujin-photo>
+        </template>
+      </demo-snippet>
+
+      <demo-snippet>
+        <template>
+          <shokujin-photo
+              number b64jpg="data:image/jpeg;base64,...">
+          </shokujin-photo>
+        </template>
+      </demo-snippet>
+
+      <demo-snippet>
+        <template>
+          <shokujin-photo
+              label b64jpg="data:image/jpeg;base64,...">
+          </shokujin-photo>
+        </template>
+      </demo-snippet>
+    </div>
+
+    <script>
+      window.addEventListener('WebComponentsReady', function () {
+        var shokujinPhotos = document.querySelectorAll('shokujin-photo');
+        for (var i = 0; i < shokujinPhotos.length; i++) {
+          var shokujinPhoto = shokujinPhotos[i];
+          if (i === 0) {
+            shokujinPhoto.b64jpg = photo4;
+          }
+
+          if (i === 1) {
+            shokujinPhoto.b64jpg = photo1;
+          }
+
+          if (i === 2) {
+            shokujinPhoto.b64jpg = photo2;
+          }
+        }
+      }, false);
+    </script>
+  </body>
+</html>
